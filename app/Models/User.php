@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -41,4 +41,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+	 * The password attribute should be hashed
+	 *
+	 * @param string $password
+	 */
+	public function setPasswordAttribute($password)
+	{
+		if ($password !== null && $password !== "")
+			$this->attributes['password'] = bcrypt($password);
+	}
+
+    /**
+     * The hexagrams that belong to the user.
+     */
+    public function hexagrams()
+    {
+        return $this->belongsToMany(Hexagram::class);
+    }
+
 }
