@@ -58,7 +58,6 @@ class User extends Authenticatable
      */
     public function hexagrams()
     {
-        return $this->belongsToMany(Hexagram::class);
+        return $this->belongsToMany(Hexagram::class)->withPivot('created_at', 'updated_at');
     }
-
 }

@@ -19,13 +19,4 @@ class Hexagram extends Model
         'name',
         'description',
     ];
-
-    /**
-     * The users that belong to the hexagram.
-     */
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
-
 }

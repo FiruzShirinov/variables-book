@@ -16,6 +16,7 @@ class CreateHexagramUserTable extends Migration
         Schema::create('hexagram_user', function (Blueprint $table) {
             $table->foreignId('user_id');
             $table->foreignId('hexagram_id');
+            $table->timestamps();
         });
     }
 

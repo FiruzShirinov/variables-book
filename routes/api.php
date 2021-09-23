@@ -4,6 +4,7 @@ use App\Http\Controllers\HexagramController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserHexagramController;
+use Monolog\Handler\RotatingFileHandler;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,5 @@ Route::middleware('auth:api')->group(function () {
         'hexagrams'       => HexagramController::class,
         'user-hexagrams'  => UserHexagramController::class
     ]);
+    Route::get('find/{code}', [HexagramController::class, 'find']);
 });

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\HexagramResource;
+use App\Http\Requests\UserHexagramRequest;
+use App\Http\Resources\UserHexagramResource;
 
 class UserHexagramController extends Controller
 {
@@ -15,7 +18,7 @@ class UserHexagramController extends Controller
     public function index()
     {
         return response()->json([
-            'user'  => auth()->user()->with('hexagrams')->get()
+            'user'  => new UserResource(auth()->user())
         ]);
     }
 
@@ -25,12 +28,15 @@ class UserHexagramController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserHexagramRequest $request)
     {
-        $request->user()->hexagrams()->attach($request->hexagram_id);
+        $request->user()->hexagrams()->attach($request->validated(), [
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
         return response()->json([
-            'user'  => $request->user()->with('hexagrams')->get()
+            'user'  => new UserResource(auth()->user())
         ]);
     }
 

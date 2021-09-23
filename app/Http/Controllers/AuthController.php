@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -13,12 +15,12 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $user = User::create($request->all());
+        $user = User::create($request->validated());
 
         return response()->json([
-            'user' => $user
+            'user' => new UserResource($user)
         ], 200);
     }
 
@@ -28,14 +30,9 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function login(UserRequest $request)
     {
-        $credentials = $request->validate([
-            'email'     => 'required|email',
-            'password'  => 'required|min:8|max:50'
-        ]);
-
-        if(!auth()->attempt($credentials)) {
+        if(!auth()->attempt($request->validated())) {
             return response()->json([
                 'message' => 'Введен неправильный адрес электронной почты или пароль, пожалуйста попробуйте еще раз.',
             ], 401);
@@ -44,9 +41,9 @@ class AuthController extends Controller
         $token = auth()->user()->createToken($request->phone)->accessToken;
 
         return response()->json([
-            'user'  => auth()->user(),
-            'token' => $token
-        ]);
+            'token' => $token,
+            'user'  => new UserResource(auth()->user())
+        ], 200);
     }
 
     /**
